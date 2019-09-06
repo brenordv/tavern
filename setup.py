@@ -45,7 +45,8 @@ class DeployPypi(Command):
         self.run_command("sdist")
 
         if len(os.listdir("dist")) > 1:
-            raise RuntimeError("More than one package in dist/ - only one can be present to upload! Delete the dist/ folder before running this command.")
+            raise RuntimeError("More than one package in dist/ - only one can be present to upload! Delete the "
+                               "dist/folder before running this command.")
 
         to_upload = os.path.join("dist", os.listdir("dist")[0])
 

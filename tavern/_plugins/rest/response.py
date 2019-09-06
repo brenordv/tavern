@@ -1,5 +1,6 @@
 import json
 import logging
+from json import JSONDecodeError
 
 try:
     from urllib.parse import urlparse, parse_qs
@@ -124,6 +125,24 @@ class RestResponse(BaseResponse):
                     "Status code was %s, expected %s", status_code, expected_code
                 )
 
+    @staticmethod
+    def _get_result_from_body(response):
+        """
+        Tries to get the response body.
+        To keep compatibility, will try to get json as default (ignoring the content-type).
+        If that fails (indicating that the body is not a json), will get the text and process it.
+        :param response: response object received from the request.
+        :return: response body.
+        """
+        try:
+            body = response.json()
+        except (ValueError, JSONDecodeError):
+            body = response.text
+            if body is not None and body.strip() == "":
+                body = None
+
+        return body
+
     def verify(self, response):
         """Verify response against expected values and returns any values that
         we wanted to save for use in future requests
@@ -153,10 +172,7 @@ class RestResponse(BaseResponse):
         self.status_code = response.status_code
 
         # Get things to use from the response
-        try:
-            body = response.json()
-        except ValueError:
-            body = None
+        body = self._get_result_from_body(response)
 
         redirect_query_params = self._get_redirect_query_params(response)
 

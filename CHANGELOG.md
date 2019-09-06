@@ -204,3 +204,5 @@ See 57f2a10e58a88325c185258d2c83b07a532aa93a for details
     - Fix not being able to use type tokens to format MQTT port
     - Allow sending single values as JSON body as according to RFC 7159
     - Change 'save' selector to use JMESpath
+
+## 0.30.1          Added support to get non-json body from responses.
